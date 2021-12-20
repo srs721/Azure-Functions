@@ -1,0 +1,58 @@
+# Python Function App to Linux on Azure
+# Build a Python function app and deploy it to Azure as a Linux function app.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+trigger:
+- master
+- develop
+
+variables:
+- name: vmImageName
+  value: 'ubuntu-latest'
+- name: workingDirectory
+  # Working Directory
+  value: '$(System.DefaultWorkingDirectory)/'
+
+stages:
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.9'
+      inputs:
+        versionSpec: 3.9 # Functions V2 supports Python 3.9 as of today
+
+    - bash: |
+        python -m venv worker_venv
+        source worker_venv/bin/activate
+        pip install --target="$(workingDirectory)/.python_packages/lib/site-packages" -r requirements.txt
+      workingDirectory: $(workingDirectory)
+      displayName: 'Install application dependencies'
+
+    - script: |
+        pip install azure-functions
+        pip install azure-servicebus
+        pip install requests
+        pip install uamqp
+        python -m unittest discover -s $(workingDirectory)/tests -p 'test_*.py' -v
+      displayName: 'Run Python Unit Tests for shared code'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(workingDirectory)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
