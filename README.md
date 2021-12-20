@@ -4,6 +4,11 @@ There are two functions included whith different logic.
 
 I am using a portal which displays information about various networking devices. The functions are used to fetch the information using Rest API.
 
+
+AZURE SERVICE BUS - Messaging bus on cloud, that is used to tranfer data and connect cloud to other applications and services. We can create and service bus on azure. 
+To use the service bus in function, simply under the configurations add a new environment variable and its value as service bus name. use the environment variable in the script.
+
+
 1. Availability Issue Report --- 
    Using three different URLS I am fetching the required data and sending it to our public function url.
   First url is used to get the dashboard id, once the dasboard id is fetched we fetch the widget information using the next url. The final url is used to fetch the device's availability score.
