@@ -7,7 +7,7 @@ I am using a portal which displays information about various networking devices.
 
 AZURE SERVICE BUS - Messaging bus on cloud, that is used to tranfer data and connect cloud to other applications and services. We can create and service bus on azure. 
 To use the service bus in function, simply under the configurations add a new environment variable and its value as service bus name. use the environment variable in the script.
-The connection string - azurewebservicebus conatins cred stored in key vault - Example - @Microsoft.KeyVault(SecretUri=https://fapp-lm-event-az2-dev.vault.azure.net/secrets/ServiceBusConnectionString/{id})
+The connection string - azurewebservicebus conatins cred stored in key vault - Example - @Microsoft.KeyVault(SecretUri=https://{function_url}/secrets/ServiceBusConnectionString/{id})
 
 1. Availability Issue Report --- 
    Using three different URLS I am fetching the required data and sending it to our public function url.
